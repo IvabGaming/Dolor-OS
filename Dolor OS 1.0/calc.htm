@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="resources/cursor/cursor.css" />
+        <meta charset="UTF-8" />
+        <style>
+            :root {
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 100px;
+            }
+
+            .screen {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 50px;
+                width: 300px;
+                border: 2px solid black
+            }
+
+            .buttons {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(4, 1fr);
+                padding-top: 25px;
+            }
+
+            button {
+                width: 75px;
+                height: 50px;
+            }
+
+            .calc {
+                border: 3px solid black;
+                display: flex;
+                flex-direction: column;
+                padding-top: 25px;
+                padding-bottom: 50px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="win-cursor-container" id="winCursor">
+
+            <svg class="cursor-state active" id="stateArrow" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-arrow">
+                    <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.35"/>
+                </filter>
+            </defs>
+            <path d="M4 2 v20.4 l4.8 -4.8 l3.9 7.8 l1.8 -0.9 l-3.9 -7.7 h6.6 z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.5" 
+                  stroke-linejoin="miter" 
+                  filter="url(#win-shadow-arrow)"/>
+        </svg>
+
+        <svg class="cursor-state" id="stateHand" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-hand">
+                    <feDropShadow dx="1" dy="1" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <path d="M10 3v9.5H9V5.5a1.5 1.5 0 0 0-3 0v11.7l-3.3-2.2a1.3 1.3 0 0 0-1.8.4 1.3 1.3 0 0 0 .4 1.8l5.5 4.1c1 .8 2.3 1.2 3.6 1.2h6.1a4.5 4.5 0 0 0 4.5-4.5V11a1.5 1.5 0 0 0-3 0v1h-1V9.5a1.5 1.5 0 0 0-3 0v1h-1V8a1.5 1.5 0 0 0-3 0z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.2" 
+                  stroke-linejoin="round" 
+                  filter="url(#win-shadow-hand)"/>
+        </svg>
+
+        </div>
+        <div class="viewport">
+            <div class="calc">
+                <div class="screen" id="scrn"></div>
+                <div class="buttons">
+                    <button onclick="appendToDisplay('7')">7</button>
+                    <button onclick="appendToDisplay('8')">8</button>
+                    <button onclick="appendToDisplay('9')">9</button>
+                    <button class="operator" onclick="appendToDisplay('+')">+</button>
+                    <button onclick="appendToDisplay('4')">4</button>
+                    <button onclick="appendToDisplay('5')">5</button>
+                    <button onclick="appendToDisplay('6')">6</button>
+                    <button class="operator" onclick="appendToDisplay('-')">−</button>
+                    <button onclick="appendToDisplay('1')">1</button>
+                    <button onclick="appendToDisplay('2')">2</button>
+                    <button onclick="appendToDisplay('7')">3</button>
+                    <button class="operator" onclick="appendToDisplay('*')">×</button>
+                    <button onclick="appendToDisplay('0')">0</button>
+                    <button class="operator" onclick="clearDisp()">C</button>
+                    <button class="operator" onclick="calc()">=</button>
+                    <button class="operator" onclick="appendToDisplay('/')">÷</button>
+                </div>
+            </div>
+        </div>
+        <script src="resources/cursor/cursor.js"></script>
+        <script>
+            function appendToDisplay(num) {
+                const display = document.getElementById('scrn');
+                display.textContent = display.textContent + num;
+            }
+
+            function calc() {
+                const display = document.getElementById('scrn');
+                if (display.textContent === '+-*/') {
+                    window.location.href = 'main.html';
+                } else {
+                    try {
+                        let ans = eval(display.textContent);
+                        display.textContent = ans;
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+
+            function clearDisp() {
+                const display = document.getElementById('scrn');
+                display.textContent = '';
+            }
+
+            const numOps = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/"];
+            const cls = ['C', 'c'];
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === '=') {
+                    calc();
+                } else if (cls.includes(event.key)) {
+                    clearDisp();
+                } else if (numOps.includes(event.key)) {
+                    appendToDisplay(event.key)
+                } else if (event.key === 'Enter') {
+                    calc();
+                }
+            });
+        </script>
+    </body>
+</html>
