@@ -27,5 +27,7 @@
 
 ## Exiting to the shell
    -At below the desktop, there is the **taskbar**. On the taskbar, there is a ***start menu button***. When you click it, the buttons will block your cursor. **That is why the start menu background is transparent.**
+   
    -In the start menu, there are to buttons, **`Shell` and `Close`**. **`Shell`** exits you back to the shell, and **`Close`** closes the start menu.
+   
    -If you decide to press **`Shell`**, there will be a loading screen where Dolor OS will unload its resources and shut down. **You are back in the Dolor OS Shell.**
