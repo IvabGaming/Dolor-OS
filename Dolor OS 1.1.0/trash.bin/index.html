@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <meta charset="UTF-8">
+        <div id="terminal"></div>
+        <span>[dolor:/] root# </span><input type="text" id="command">
+        <script>
+                    const commands = {
+            help: () => [
+                { type: 'info', text: '┌─ AVAILABLE COMMANDS ──────────────────────' },
+                { type: 'output', text: '  help:           show this message' },
+                { type: 'output', text: '  clear:          clear the shell' },
+                { type: 'output', text: '  version:        show OS version' },
+                { type: 'output', text: '  whoami:         who are you?' },
+                { type: 'output', text: '  boot:           boot to Dolor OS' },
+                { type: 'info', text:  '└───────────────────────────────────────────' },
+            ],
+            clear: () => { clearTerminal(); return []; },
+            exit: () => { navigate('index.html'); return [{ type: 'success', text: 'Returning to main menu...' }]; },
+            version: () => [
+                { type: 'info', text: 'Dolor OS—The official operating system of Dolor Corp' },
+                { type: 'output', text: 'Kernel: LocusKernel 1.0.0 (Modified)' },
+                { type: 'output', text: 'Platform: Dolor Corp. Servers' },
+            ],
+            whoami: () => [
+                { type: 'output', text: 'root' },
+            ],
+            boot: () => { boot(); return [{ type: 'success', text: 'Loading Dolor OS 1.0... ' }]; },
+        };
+
+        function navigate(url) {
+            setTimeout(() => window.location.href = url, 600);
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminal').innerHTML = '';
+        }
+
+        function addLine(type, text) {
+            const terminal = document.getElementById('terminal');
+            const line = document.createElement('div');
+            line.classList.add('line', type);
+            line.textContent = text;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function send() {
+            const input = document.getElementById('command');
+            const txt = input.value.trim().toLowerCase();
+            input.value = '';
+
+            if (!txt) return;
+
+            // Echo the command
+            const terminal = document.getElementById('terminal');
+            const promptLine = document.createElement('div');
+            promptLine.classList.add('line', 'prompt');
+            promptLine.innerHTML = `locusos /> <span class="cmd-text">${txt}</span>`;
+            terminal.appendChild(promptLine);
+
+            // Run command
+            if (commands[txt]) {
+                const output = commands[txt]();
+                output.forEach(({ type, text }) => addLine(type, text));
+            } else {
+                addLine('error', `command not found: '${txt}' — type 'help' for commands`);
+            }
+
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('command').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') send();
+        });
+
+        // Boot message
+        window.addEventListener('load', () => {
+            addLine('info', 'Dolor OS Shell v1');
+            addLine('output', 'Type \'help\' for a list of commands.');
+            addLine('output', '');
+        });
+
+        function boot() {
+            window.location.href = 'boot.html';
+        }
+
+        function shutdown() {
+            window.location.href = 'off.html';
+        }
+        </script>
+    </body>
+</html>

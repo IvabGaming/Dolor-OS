@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <meta charset="UTF-8" />
+        <div id="output">
+
+        </div>
+        <span>[-root-] dolor\> </span><input type="text" id="command">
+        <script>
+            const output = document.getElementById('output');
+            const comLine = '[-root-] dolor\\>';
+            const commands = {
+                boot: boot,
+                help: help,
+                clear: clear,
+                version: version,
+                whoami: whoami,
+                echo: echo,
+            }
+
+            function navigate(url) {
+                window.location.href = url;
+            } 
+
+            function addLine(text) {
+                output.innerHTML += `<span>${text}</span><br />`;
+            }
+
+            function boot() {
+                addLine(comLine + ' boot');
+                addLine('Booting to Dolor OS');
+                navigate('../boot.html')
+            }
+
+            function help() {
+                addLine(comLine + ' help');
+                addLine('— Available commands: —');
+                addLine('boot: boot to Dolor OS');
+                addLine('help: Show all available commands');
+                addLine('clear: clear the shell');
+                addLine('version: show Dolor OS version');
+                addLine('whoami: show who the current user is');
+                addLine('echo: echo text to the shell');
+                addLine('—————————————————————');
+            }
+
+            function clear() {
+                output.innerHTML = ``;
+            }
+
+            function version() {
+                addLine(comLine + ' version');
+                addLine(`Shell version 2.1`);
+                addLine('OS version 1.1');
+            }
+
+            function whoami() {
+                addLine(comLine + ' whoami');
+                addLine('root');
+            }
+
+            function echo(text) {
+                const txt = text.join(' ');
+                addLine(comLine + ` echo ${txt}`);
+                addLine(`${txt}`);
+            }
+
+            function send() {
+                const input = document.getElementById('command');
+    
+                // 1. Split the string by spaces into an array
+                // If you type "echo hello world", this becomes ["echo", "hello", "world"]
+                const inputParts = input.value.trim().split(' ');
+    
+                // 2. Extract the very first word as the command name ("echo")
+                // This removes "echo" from the array, leaving inputParts as ["hello", "world"]
+                const commandName = inputParts.shift().toLowerCase(); 
+    
+                // 3. What is left over are your arguments
+                const args = inputParts;
+
+                // 4. Look up JUST the command name ("echo") instead of the whole string
+                if (commands[commandName]) {
+                    // Pass the remaining args array into your function
+                    commands[commandName](args); 
+                } else {
+                    console.log(`Error: "${commandName}" unrecognized`);
+                }
+    
+                input.value = '';
+            }
+
+
+            function welcome() {
+                addLine('Dolor Shell v2.1');
+                addLine('Type \'help\' for a list of all commands.');
+            }
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    send();
+                }
+            });
+
+            welcome();
+        </script>
+    </body>
+</html>

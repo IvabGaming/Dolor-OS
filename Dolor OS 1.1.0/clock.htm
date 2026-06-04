@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="resources/cursor/cursor.css" />
+    <style>
+        body {
+            height: 98vh;
+            width: 99vw;
+        }
+
+        .clock-mode-content {
+            background-color: #888;
+            color: black;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 95%;
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background-color: #bbb;
+            height: 5%;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            align-items: center;
+            justify-items: center;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 18px;
+        }
+
+        .topBtn {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="viewport-center">
+        <div class="topbar" id="topBar">
+            <button onclick="window.location.href='main.html';">Exit Clock</button>
+            <button class="topBtn clock" onclick="loadClockMode()">⏲</button>
+            <button class="topBtn timer" onclick="loadTimerMode()">⏱</button>
+        </div>
+
+        <div class="clock-mode-content" id="clockCont">
+
+        </div>
+    </div>
+    <div class="win-cursor-container" id="winCursor">
+            <!-- State A: Reverted to the Authentic Windows 11 Arrow with Tail Stem -->
+        <svg class="cursor-state active" id="stateArrow" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-arrow">
+                    <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.35"/>
+                </filter>
+            </defs>
+            <path d="M4 2 v20.4 l4.8 -4.8 l3.9 7.8 l1.8 -0.9 l-3.9 -7.7 h6.6 z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.5" 
+                  stroke-linejoin="miter" 
+                  filter="url(#win-shadow-arrow)"/>
+        </svg>
+
+            <svg class="cursor-state" id="stateHand" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-hand">
+                    <feDropShadow dx="1" dy="1" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <path d="M10 3v9.5H9V5.5a1.5 1.5 0 0 0-3 0v11.7l-3.3-2.2a1.3 1.3 0 0 0-1.8.4 1.3 1.3 0 0 0 .4 1.8l5.5 4.1c1 .8 2.3 1.2 3.6 1.2h6.1a4.5 4.5 0 0 0 4.5-4.5V11a1.5 1.5 0 0 0-3 0v1h-1V9.5a1.5 1.5 0 0 0-3 0v1h-1V8a1.5 1.5 0 0 0-3 0z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.2" 
+                  stroke-linejoin="round" 
+                  filter="url(#win-shadow-hand)"/>
+        </svg>
+        </div>
+ 
+    <script src="resources/cursor/cursor.js"></script>
+    <script src="resources/audio/timer.js"></script>
+
+    <script>
+        const clockCont = document.getElementById('clockCont');
+        const topBar = document.getElementById('topBar');
+
+        function loadClockMode() {
+
+            clockCont.innerHTML = `
+                <span>Dolor OS Clock</span>
+                <button class="action-button" onclick="updateClock();">Refresh Clock</button>
+                <br />
+                <time id="clockTime"></time>
+                <span></span>
+            `;
+
+            function updateClock() {
+                const c = document.getElementById('clockTime');
+                const now = new Date();
+                const time = now.toLocaleTimeString();
+                c.textContent = time;
+            }
+
+            setInterval(updateClock, 1000);
+            updateClock();
+        }
+
+        let timerInterval;
+        let remainingSeconds = 0;
+
+        function loadTimerMode() {
+            clockCont.innerHTML = `
+                <span>Dolor OS Timer</span>
+                <input class="action-button" type="number" min="1" placeholder="Enter time in seconds" id="timerInput" />
+                <button class="action-button" onclick="startTimer()">Start Timer</button>
+                <button class="action-button" onclick="stopTimer()">Stop Timer</button>
+                <button class="action-button" onclick="resetTimer()">Reset</button>
+                <br />
+                <time id="timerTime">00:00:00</time>
+                <span></span>
+            `;
+        }
+
+        function startTimer() {
+            const input = document.getElementById('timerInput');
+            const seconds = Number(input.value);
+            if (!Number.isFinite(seconds) || seconds <= 0) {
+                alert('Please enter a positive number of seconds.');
+                return;
+            }
+
+            clearInterval(timerInterval);
+            remainingSeconds = Math.floor(seconds);
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                remainingSeconds -= 1;
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    remainingSeconds = 0;
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            remainingSeconds = 0;
+            updateTimerDisplay();
+            const input = document.getElementById('timerInput');
+            if (input) input.value = '';
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
+            const minutes = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
+            const seconds = Math.floor(remainingSeconds % 60).toString().padStart(2, '0');
+            const timerTime = document.getElementById('timerTime');
+            if (timerTime) {
+                timerTime.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            if (remainingSeconds === 0) {
+                playTimerAlarm();
+            }
+        }
+    
+        loadClockMode();
+    </script>
+</body>
+</html>
