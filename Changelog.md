@@ -10,3 +10,6 @@ The `echo` command is structured like this:
 
 ```
 Of course, you can replace the text with whatever you want, however, **because Dolor OS does not utilize Electron, it cannot `echo` to a text file.**
+
+## Dolor OS 1.2
+1. There are three new apps, the SVG Viewer, the Dolor Shell Emulator, and Mitochondrion.
