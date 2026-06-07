@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <style>
+            :root {
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 100px;
+            }
+
+            .screen {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 50px;
+                width: 300px;
+                border: 2px solid black
+            }
+
+            .buttons {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(4, 1fr);
+                padding-top: 25px;
+            }
+
+            button {
+                width: 75px;
+                height: 50px;
+            }
+
+            .calc {
+                border: 3px solid black;
+                display: flex;
+                flex-direction: column;
+                padding-top: 25px;
+                padding-bottom: 50px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+            <div class="calc">
+                <div class="screen" id="scrn"></div>
+                <div class="buttons">
+                    <button onclick="appendToDisplay('7')">7</button>
+                    <button onclick="appendToDisplay('8')">8</button>
+                    <button onclick="appendToDisplay('9')">9</button>
+                    <button class="operator" onclick="appendToDisplay('+')">+</button>
+                    <button onclick="appendToDisplay('4')">4</button>
+                    <button onclick="appendToDisplay('5')">5</button>
+                    <button onclick="appendToDisplay('6')">6</button>
+                    <button class="operator" onclick="appendToDisplay('-')">−</button>
+                    <button onclick="appendToDisplay('1')">1</button>
+                    <button onclick="appendToDisplay('2')">2</button>
+                    <button onclick="appendToDisplay('7')">3</button>
+                    <button class="operator" onclick="appendToDisplay('*')">×</button>
+                    <button onclick="appendToDisplay('0')">0</button>
+                    <button class="operator" onclick="clearDisp()">C</button>
+                    <button class="operator" onclick="calc()">=</button>
+                    <button class="operator" onclick="appendToDisplay('/')">÷</button>
+                </div>
+            </div>
+        <script>
+            function appendToDisplay(num) {
+                const display = document.getElementById('scrn');
+                display.textContent = display.textContent + num;
+            }
+
+            function calc() {
+                const display = document.getElementById('scrn');
+                if (display.textContent === '+-*/') {
+                    window.location.href = '../kernel/kernel.html';
+                } else {
+                    try {
+                        let ans = eval(display.textContent);
+                        display.textContent = ans;
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+
+            function clearDisp() {
+                const display = document.getElementById('scrn');
+                display.textContent = '';
+            }
+
+            const numOps = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/"];
+            const cls = ['C', 'c'];
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === '=') {
+                    calc();
+                } else if (cls.includes(event.key)) {
+                    clearDisp();
+                } else if (numOps.includes(event.key)) {
+                    appendToDisplay(event.key)
+                } else if (event.key === 'Enter') {
+                    calc();
+                }
+            });
+        </script>
+    </body>
+</html>

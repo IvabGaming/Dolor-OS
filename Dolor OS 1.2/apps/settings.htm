@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../resources/cursor/cursor.css">
+        <title>Dolor OS Settings</title>
+        <style>
+            body {
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                background-color: #888;
+                color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <button style="background-color: red;" onclick="window.location.href = '../main.html';">X</button>
+
+    <div class="viewport">
+        <span>Enter a background color (hexadecimal):</span><input class="action-button" type="number" id="bg-hex-input" placeholder="008080" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6);"><button class="action-button" onclick="saveSystemBackground()">Save as desktop background</button>
+
+    </div>
+        
+    <!-- THE ENGINE: The HTML architecture tracking layer -->
+    <div class="win-cursor-container" id="winCursor">
+        
+        <!-- State A: Reverted to the Authentic Windows 11 Arrow with Tail Stem -->
+        <svg class="cursor-state active" id="stateArrow" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-arrow">
+                    <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.35"/>
+                </filter>
+            </defs>
+            <path d="M4 2 v20.4 l4.8 -4.8 l3.9 7.8 l1.8 -0.9 l-3.9 -7.7 h6.6 z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.5" 
+                  stroke-linejoin="miter" 
+                  filter="url(#win-shadow-arrow)"/>
+        </svg>
+
+        <!-- State B: Reverted to the Standard Windows 11 Link Hand -->
+        <svg class="cursor-state" id="stateHand" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-hand">
+                    <feDropShadow dx="1" dy="1" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <path d="M10 3v9.5H9V5.5a1.5 1.5 0 0 0-3 0v11.7l-3.3-2.2a1.3 1.3 0 0 0-1.8.4 1.3 1.3 0 0 0 .4 1.8l5.5 4.1c1 .8 2.3 1.2 3.6 1.2h6.1a4.5 4.5 0 0 0 4.5-4.5V11a1.5 1.5 0 0 0-3 0v1h-1V9.5a1.5 1.5 0 0 0-3 0v1h-1V8a1.5 1.5 0 0 0-3 0z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.2" 
+                  stroke-linejoin="round" 
+                  filter="url(#win-shadow-hand)"/>
+        </svg>
+
+    </div>
+
+    <script src="../resources/cursor/cursor.js"></script>
+
+<script>
+    async function saveSystemBackground() {
+        const inputElement = document.getElementById('bg-hex-input');
+        const theNumber = inputElement.value;
+
+        // Validation rule: ensure it is 6 digits long
+        if (rawNumber.length !== 6) {
+            alert("Error: Hex string must be exactly 6 digits.");
+            return;
+        }
+
+        const rawNumber = '#' + theNumber
+
+        try {
+            // 1. Open the macOS file picker, looking specifically for your file
+            const [fileHandle] = await window.showOpenFilePicker({
+                types: [{
+                    description: 'Dolor OS Background Configuration',
+                    accept: { 'text/plain': ['.txt'] }
+                }],
+                excludeAcceptAllOption: true
+            });
+
+            // 2. Request a direct write channel to the selected file
+            const writable = await fileHandle.createWritable();
+            
+            // 3. Write your clean 6-digit string right into it (wiping out old data)
+            await writable.write(rawNumber);
+            
+            // 4. Close the channel to finalize the save on your Mac
+            await writable.close();
+            
+            // 5. Instant UI Update: Change your current background style right now
+            document.documentElement.style.setProperty('--bg', '#' + rawNumber);
+            
+            alert("Success! settings/bg.txt has been updated.");
+
+        } catch (err) {
+            console.error("File write operation aborted or failed:", err);
+        }
+    }
+</script>
+
+    </body>
+</html>

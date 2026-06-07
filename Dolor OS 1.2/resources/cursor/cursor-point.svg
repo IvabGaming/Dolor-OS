@@ -1,0 +1,14 @@
+<!-- State A: Reverted to the Authentic Windows 11 Arrow with Tail Stem -->
+        <svg class="cursor-state active" id="stateArrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-arrow">
+                    <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.35"/>
+                </filter>
+            </defs>
+            <path d="M4 2 v20.4 l4.8 -4.8 l3.9 7.8 l1.8 -0.9 l-3.9 -7.7 h6.6 z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.5" 
+                  stroke-linejoin="miter" 
+                  filter="url(#win-shadow-arrow)"/>
+        </svg>

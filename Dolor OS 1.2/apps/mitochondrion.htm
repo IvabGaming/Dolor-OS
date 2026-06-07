@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../resources/cursor/cursor.css" />
+        <style>
+            iframe {
+                width: 98vw;
+                height: 98vh;
+            }
+
+            .exitBtn {
+                background-color: red;
+            }
+        </style>    
+    </head>
+    <body>
+        <div class="viewport-center">
+        <button class="exitBtn" onclick="window.location.href = '../main.html'">X</button>
+        <iframe src="https://mito.ivabgaming.com"></iframe>
+        </div>
+        <div class="win-cursor-container" id="winCursor">
+            <img class="cursor-state active" id="stateArrow" src="../resources/cursor/cursor-point.svg" />
+            <img class="cursor-state" id="stateHand" src="../resources/cursor/cursor-hand.svg" />
+        </div>
+        <script src="../resources/cursor/cursor.js"></script>
+    </body>
+</html>

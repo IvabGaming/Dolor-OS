@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="100%" height="100%">
+    <!-- Outer Membrane -->
+    <ellipse cx="25" cy="25" rx="17" ry="25" fill="#ffda00" stroke="#ffad00" stroke-width="2" />
+    
+    <!-- Anatomical Folds (Snaking side-to-side) -->
+    <path d="M 25 8 
+             C 12 8, 12 16, 25 16
+             C 38 16, 38 24, 25 24
+             C 12 24, 12 32, 25 32
+             C 38 32, 38 40, 25 40" 
+          fill="none" 
+          stroke="#ff1744" 
+          stroke-width="2.5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+</svg>

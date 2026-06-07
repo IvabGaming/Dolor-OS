@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="kernel/icns/dolor.svg" />
+    <title>Dolor OS 1.0</title>
+    <style>
+        :root {
+            --bg-color: #888
+        }
+
+        /* 1. STRUCTURAL FIX: Lock layout boundaries to prevent macOS fallback zones */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            background-color: var(--bg-color); /* Your working site background */
+            color: #ffffff;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden; /* Prevents scrollbars from tracking the custom div */
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        /* 2. FORCE SYSTEM HIDE: Strips the macOS pointer completely from all page elements */
+        html, body, *, a, button, input {
+            cursor: none !important;
+        }
+
+        /* 3. CORE CONTAINER: Fixed tracking div for the Javascript engine */
+        .win-cursor-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 32px; 
+            height: 32px;
+            pointer-events: none; /* Crucial: Stops the div from blocking link clicks */
+            z-index: 999999;
+            will-change: transform;
+            transform: translate3d(-50px, -50px, 0); /* Start hidden off-screen */
+            display: none; /* Reveal only when first mouse movement fires */
+        }
+
+        /* 4. VISUAL STATES: Handles the shape switches */
+        .cursor-state {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .cursor-state.active {
+            display: block;
+        }
+
+        /* Standard layout alignment styles for presentation */
+        .viewport-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        .action-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #0078d4; /* Windows blue */
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .taskbar {
+            height: 8%;
+            width: 100%;
+            display: grid;
+            grid-template-rows: 1fr;
+            grid-template-columns: repeat(15, 1fr);
+            background-color: #c8c8c8;
+        }
+
+        .desktop {
+            height: 92%;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(13, 1fr);
+        }
+
+        dialog {
+            background-color: rgba(0, 0, 0, 0);
+            cursor: default;
+        }
+
+        .dskBtn {
+            border-radius: 14px;
+        }
+
+        .tskTime {
+            grid-row: 1;
+            grid-column: 15;
+            padding-top: 2.5vh;
+            padding-bottom: 2.5vh;
+            color: #0078d4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- THE ENGINE: The HTML architecture tracking layer -->
+    <div class="win-cursor-container" id="winCursor">
+        
+        <!-- State A: Reverted to the Authentic Windows 11 Arrow with Tail Stem -->
+        <svg class="cursor-state active" id="stateArrow" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-arrow">
+                    <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.35"/>
+                </filter>
+            </defs>
+            <path d="M4 2 v20.4 l4.8 -4.8 l3.9 7.8 l1.8 -0.9 l-3.9 -7.7 h6.6 z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.5" 
+                  stroke-linejoin="miter" 
+                  filter="url(#win-shadow-arrow)"/>
+        </svg>
+
+        <!-- State B: Reverted to the Standard Windows 11 Link Hand -->
+        <svg class="cursor-state" id="stateHand" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-hand">
+                    <feDropShadow dx="1" dy="1" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <path d="M10 3v9.5H9V5.5a1.5 1.5 0 0 0-3 0v11.7l-3.3-2.2a1.3 1.3 0 0 0-1.8.4 1.3 1.3 0 0 0 .4 1.8l5.5 4.1c1 .8 2.3 1.2 3.6 1.2h6.1a4.5 4.5 0 0 0 4.5-4.5V11a1.5 1.5 0 0 0-3 0v1h-1V9.5a1.5 1.5 0 0 0-3 0v1h-1V8a1.5 1.5 0 0 0-3 0z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.2" 
+                  stroke-linejoin="round" 
+                  filter="url(#win-shadow-hand)"/>
+        </svg>
+
+    </div>
+
+    <!-- MAIN PAGE CONTENT -->
+    <div class="viewport-center">
+        <div class="desktop">
+            <button class="dskBtn" onclick="window.comingSoon.showModal()">
+                <svg xmlns="http://w3.org" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+            <button class="dskBtn" onclick="window.location.href = 'apps/web.htm'">
+                <svg xmlns="http://w3.org" width="50" height="50" fill="none" viewBox="0 0 50 50" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle r="14" cx="25" cy="25" stroke="black" fill="none" />
+                    <line x1="25" x2="25" y1="11" y2="39" style="stroke:black;stroke-width:2;" />
+                    <ellipse rx="7" ry="14" cx="25" cy="25" fill="none" stroke="black" />
+                    <line x1="11" x2="39" y1="25" y2="25" stroke="black" stroke-width="2" />
+                    <ellipse rx="14" ry="7" cx="25" cy="25" fill="none" stroke="black" />
+                </svg>
+            </button>
+            <button onclick="window.location.href = 'apps/calc.htm'" class="dskBtn">
+                <svg xmlns="http://w3.org" width="50" height="50" fill="none" viewBox="0 0 50 50" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="33" height="45" x="9" y="2.5" rx="4.5" ry="4.5" fill="none" stroke="black" />
+                    <rect width="28" height="7.5" x="11.5" y="7" rx="2.25" ry="2.25" fill="green" stroke="black" />
+                    <rect width="7" height="7" x="11.5" y="15" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="11.5" y="22" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="11.5" y="29" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="11.5" y="36" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="18.5" y="15" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="25.5" y="15" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="32.5" y="15" rx="2.25" ry="2.25" fill="orange" stroke="black" />
+                    <rect width="7" height="7" x="32.5" y="22" rx="2.25" ry="2.25" fill="orange" stroke="black" />
+                    <rect width="7" height="7" x="32.5" y="29" rx="2.25" ry="2.25" fill="orange" stroke="black" />
+                    <rect width="7" height="7" x="32.5" y="36" rx="2.25" ry="2.25" fill="orange" stroke="black" />
+                    <rect width="14" height="7" x="18.5" y="36" rx="2.25" ry="2.25" fill="orange" stroke="black" />
+                    <rect width="7" height="7" x="18.5" y="22" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="18.5" y="29" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="25.5" y="22" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                    <rect width="7" height="7" x="25.5" y="29" rx="2.25" ry="2.25" fill="white" stroke="black" />
+                </svg>
+            </button>
+            <button class="dskBtn" onclick="window.location.href = 'apps/svgView.htm';">
+                <svg xmlns="http://w3.org" width="50" height="50" fill="none" viewBox="0 0 50 50" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle r="13" cx="18" cy="23" fill="#ff0000" />
+                    <polygon points="41,32 28,4 15,37" fill="#00ff00" />
+                    <polygon points="31,19 13,23 9,37 31,47" fill="#0000ff" />
+                </svg>
+            </button>
+            <button onclick="window.location.href = 'apps/emul.htm'" class="dskBtn">
+                <svg xmlns="https://w3.org" width="50" height="50" viewBox="0 0 50 50">
+                    <rect height="45" y="2.5" width="5" x="10" fill="#888" stroke="#888" />
+                    <circle r="22.5" cx="15" cy="25" fill="none" stroke-width="5" stroke="#888" />
+                    <rect height="50" y="0" width="10" x="0" fill="#eee" stroke="none" />
+                    <rect height="5" width="20" fill="#888" stroke="none" x="4" y="45" />
+                    <rect height="5" width="20" fill="#888" stroke="none" x="2" y="0.25" />
+                </svg>
+            </button>
+            <button onclick="window.location.href = 'apps/mitochondrion.htm'" class="dskBtn">
+                <img src="resources/icns/mitochondrion.svg" />
+            </button>
+        </div>
+        <div class="taskbar">
+            <button style="padding-bottom:10px;" onclick="window.startMenu.showModal()" class="action-button">Start</button>
+            <time id="clock" class="tskTime">hh:mm:ss</time>
+        </div>
+    </div>
+
+    <dialog id="startMenu">
+        <div class="win-cursor-container" id="winCursor"></div>
+        <h3>Start Menu</h3>
+        <button class="action-button" onclick="window.location.href = 'shell.html'">Shell</button>
+        <button class="action-button" onclick="window.startMenu.close()">Close</button>
+    </dialog>
+
+    <dialog id="comingSoon">
+        <h2>Coming Soon!</h2>
+        <h3>or maybe never...</h3>
+        <button class="action-button" onclick="window.comingSoon.close()">Close</button>
+    </dialog>
+
+    <!-- 5. TRACKING ENGINE: The JavaScript loop -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursorContainer = document.getElementById('winCursor');
+            const stateArrow = document.getElementById('stateArrow');
+            const stateHand = document.getElementById('stateHand');
+            let isVisible = false;
+
+            // Coordinate listener loop
+            window.addEventListener('mousemove', (e) => {
+                if (!isVisible) {
+                    cursorContainer.style.display = 'block';
+                    isVisible = true;
+                }
+
+                // Offsets -4 and -2 keep the vector tip anchored perfectly to click targets
+                const xPos = e.clientX - 4;
+                const yPos = e.clientY - 2;
+
+                // translate3d forces the browser to use your Mac's GPU for 0-lag processing
+                cursorContainer.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+            });
+
+            // Interactive Element Triggers (Swaps arrow shape to hand shape on hovers)
+            const interactiveElements = document.querySelectorAll('a, button, .action-button');
+            
+            interactiveElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    stateArrow.classList.remove('active');
+                    stateHand.classList.add('active');
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    stateHand.classList.remove('active');
+                    stateArrow.classList.add('active');
+                });
+            });
+
+            // Clean fallback toggle if cursor leaves the main window frame
+            document.addEventListener('mouseleave', () => {
+                cursorContainer.style.display = 'none';
+                isVisible = false;
+            });
+        });
+
+        (function() {
+            const time = document.getElementById('clock');
+
+            function updateClock() {
+                if (!time) return;
+                const date = new Date();
+                time.textContent = date.toLocaleTimeString();
+            }
+            setInterval(updateClock, 100);
+        })();
+    </script>
+
+    <script>
+        fetch('settings/bg.txt')
+            .then(response => response.text())
+            .then(text => {
+                // Clean up any accidental spaces or hidden line breaks
+                const cleanColor = text.trim();
+                
+                // 4. Inject the text value into the CSS root variable
+                document.documentElement.style.setProperty('--bg-color', cleanColor);
+                console.log("CSS Variable updated to:", cleanColor);
+            })
+            .catch(error => {
+                console.error("Error reading the background color file:", error);
+            });
+    </script>
+</body>
+</html>

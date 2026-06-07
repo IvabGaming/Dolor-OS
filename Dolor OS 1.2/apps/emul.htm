@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../resources/cursor/cursor.css" />
+        <style>
+            :root {
+                --bg: #fff;
+            }
+        </style>
+    </head>
+    <body>
+            <div id="output">
+
+            </div>
+            <span>[-vm-] dolor \></span><input id="input" type="text" />
+
+        <div class="win-cursor-container" id="winCursor">
+
+             <!-- State A: Reverted to the Authentic Windows 11 Arrow with Tail Stem -->
+        <svg class="cursor-state active" id="stateArrow" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-arrow">
+                    <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.35"/>
+                </filter>
+            </defs>
+            <path d="M4 2 v20.4 l4.8 -4.8 l3.9 7.8 l1.8 -0.9 l-3.9 -7.7 h6.6 z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.5" 
+                  stroke-linejoin="miter" 
+                  filter="url(#win-shadow-arrow)"/>
+        </svg>
+
+            <svg class="cursor-state" id="stateHand" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-hand">
+                    <feDropShadow dx="1" dy="1" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <path d="M10 3v9.5H9V5.5a1.5 1.5 0 0 0-3 0v11.7l-3.3-2.2a1.3 1.3 0 0 0-1.8.4 1.3 1.3 0 0 0 .4 1.8l5.5 4.1c1 .8 2.3 1.2 3.6 1.2h6.1a4.5 4.5 0 0 0 4.5-4.5V11a1.5 1.5 0 0 0-3 0v1h-1V9.5a1.5 1.5 0 0 0-3 0v1h-1V8a1.5 1.5 0 0 0-3 0z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.2" 
+                  stroke-linejoin="round" 
+                  filter="url(#win-shadow-hand)"/>
+        </svg>
+
+        </div>
+
+        <script src="../resources/cursor/cursor.js"></script>
+
+        <script>
+            const out = document.getElementById('output');
+            const ni = document.getElementById('input');
+            const comLine = `[-vm-] dolor \\>`
+            const commands = {
+                exit: exit,
+                help: help,
+            }
+
+            function addLine(text) {
+                out.innerHTML += `<span>${text}</span><br />`;
+            }
+
+            function navigate(url) {
+                window.location.href = url;
+            }
+
+            function exit() {
+                addLine(comLine + ' exit');
+                navigate('../main.html');
+            }
+
+            function bgcol(color) {
+                addLine(comLine + ' bgcol ' + color);
+            }
+
+            function help() {
+                addLine('———————————');
+                addLine('AVAILABLE COMMANDS');
+                addLine('———————————');
+                addLine('help: show this help message');
+                addLine('exit: exit Domus to the desktop')
+                addLine('———————————');
+            }
+
+            function send() {
+                const inputParts = ni.value.trim().split(' ');
+                const command = inputParts.shift().toLowerCase(); 
+                const args = inputParts;
+
+                if (commands[command]) {
+                    commands[command](args);
+                } else {
+                    addLine(`<span style="color:red;">
+                        —————————————<br />
+                        Unrecognized command: '${command}'<br />
+                        —————————————<br />
+                        </span>`);
+                }
+                ni.value = ``;
+            }
+
+            function welcome() {
+                addLine('Welcome to Domus!');
+                addLine('Domus is the only emulator for the Dolor Shell.')
+                addLine('Reported Dolor Shell version: v2.1');
+                addLine('Type \'help\' for a full list of commands.')
+            }
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    send();
+                }
+            });
+
+            welcome();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            :root {
+                --bg: #fff;
+                --cursor: default;
+                --text: black;
+                --font: 'Times New Roman', Times, serif;
+            }
+
+            body {
+                background-color: var(--bg);
+                justify-content: center;
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+                cursor: default;
+                height: 98vh;
+                width: 99vw;
+                font-family: var(--font);
+            }
+
+            .main {
+                width:100px;
+                height:100px;
+                border:10px solid #bbb;
+                border-top:10px solid white;
+                border-radius:50%;
+                animation:spin 2s linear infinite;
+            }
+
+            /* 3. CORE CONTAINER: Fixed tracking div for the Javascript engine */
+        .win-cursor-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 32px; 
+            height: 32px;
+            pointer-events: none; /* Crucial: Stops the div from blocking link clicks */
+            z-index: 999999;
+            will-change: transform;
+            transform: translate3d(-50px, -50px, 0); /* Start hidden off-screen */
+            display: none; /* Reveal only when first mouse movement fires */
+        }
+
+        /* 4. VISUAL STATES: Handles the shape switches */
+        .cursor-state {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .cursor-state.active {
+            display: block;
+        }
+        </style>
+    </head>
+    <body id="body">
+        <h1>Dolor OS</h1>
+        <div class="main"></div>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+        <p id="msg"></p>
+
+        <script>
+            function loadBg() {
+                document.documentElement.style.setProperty('--bg', '#888');
+            }
+
+            function loadCursor() {
+            const cursorContainer = document.getElementById('winCursor');
+            const stateArrow = document.getElementById('stateArrow');
+            const stateHand = document.getElementById('stateHand');
+            let isVisible = false;
+
+            // Coordinate listener loop
+            window.addEventListener('mousemove', (e) => {
+                if (!isVisible) {
+                    cursorContainer.style.display = 'block';
+                    isVisible = true;
+                }
+
+                // Offsets -4 and -2 keep the vector tip anchored perfectly to click targets
+                const xPos = e.clientX - 4;
+                const yPos = e.clientY - 2;
+
+                // translate3d forces the browser to use your Mac's GPU for 0-lag processing
+                cursorContainer.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+            });
+
+            // Interactive Element Triggers (Swaps arrow shape to hand shape on hovers)
+            const interactiveElements = document.querySelectorAll('a, button, .action-button');
+            
+            interactiveElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    stateArrow.classList.remove('active');
+                    stateHand.classList.add('active');
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    stateHand.classList.remove('active');
+                    stateArrow.classList.add('active');
+                });
+            });
+
+            // Clean fallback toggle if cursor leaves the main window frame
+            document.addEventListener('mouseleave', () => {
+                cursorContainer.style.display = 'none';
+                isVisible = false;
+            });
+            }
+
+            setTimeout(function() {
+                loadBg();
+            }, 2300);
+
+            setTimeout(function() {
+                document.body.style.cursor = 'none';
+                loadCursor();
+            }, 3500);
+
+            setTimeout(function() {
+                document.getElementById('msg').textContent = 'All resources loaded. Proceeding to Dolor OS.';
+            }, 7300);
+
+            setTimeout(function() {
+                document.documentElement.style.setProperty('--font', "'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif")
+            }, 5697);
+
+            setTimeout(function() {
+                window.location.href = 'main.html';
+            }, 9365);
+        </script>
+
+        <div class="win-cursor-container" id="winCursor">
+        
+        <!-- State A: Reverted to the Authentic Windows 11 Arrow with Tail Stem -->
+        <svg class="cursor-state active" id="stateArrow" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-arrow">
+                    <feDropShadow dx="1" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.35"/>
+                </filter>
+            </defs>
+            <path d="M4 2 v20.4 l4.8 -4.8 l3.9 7.8 l1.8 -0.9 l-3.9 -7.7 h6.6 z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.5" 
+                  stroke-linejoin="miter" 
+                  filter="url(#win-shadow-arrow)"/>
+        </svg>
+
+        <!-- State B: Reverted to the Standard Windows 11 Link Hand -->
+        <svg class="cursor-state" id="stateHand" xmlns="http://w3.org" viewBox="0 0 32 32">
+            <defs>
+                <filter id="win-shadow-hand">
+                    <feDropShadow dx="1" dy="1" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <path d="M10 3v9.5H9V5.5a1.5 1.5 0 0 0-3 0v11.7l-3.3-2.2a1.3 1.3 0 0 0-1.8.4 1.3 1.3 0 0 0 .4 1.8l5.5 4.1c1 .8 2.3 1.2 3.6 1.2h6.1a4.5 4.5 0 0 0 4.5-4.5V11a1.5 1.5 0 0 0-3 0v1h-1V9.5a1.5 1.5 0 0 0-3 0v1h-1V8a1.5 1.5 0 0 0-3 0z" 
+                  fill="#404040" 
+                  stroke="#d6d6d6" 
+                  stroke-width="1.2" 
+                  stroke-linejoin="round" 
+                  filter="url(#win-shadow-hand)"/>
+        </svg>
+
+    </div>
+        
+    </body>
+</html>
